@@ -3,6 +3,7 @@ using namespace std;
 const int64_t mod = 1e9 + 7;
 int dr[] = {1, 0, -1, 0, 1};
 
+
 vector<int64_t> fac;
 vector<int64_t> invfac;
 int64_t powmod(int64_t a, int64_t p) {
