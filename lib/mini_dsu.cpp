@@ -23,7 +23,7 @@ struct dsu {
 
     inline int size (int v) {
         return siz[root(v)];
-    }//otameshi
+    }
     
     inline bool same(int u, int v) {
         return root(u) == root(v);
