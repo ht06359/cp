@@ -3,19 +3,34 @@ using namespace std;
 
 // verified
 // https://atcoder.jp/contests/abc296/submissions/56589427
+// https://onlinejudge.u-aizu.ac.jp/status/users/ht06359/submissions/1/GRL_3_C/judge/9571804/C++17
+
 
 struct scc{
-    int N;
+    int n;
     vector<bool> seen;
     vector<int> vs, topo_order;
     vector<vector<int>> g, rg, group;
 
-    scc(int n) {
-        N = n;
-        g.resize(N + 1);
-        rg.resize(N + 1);
-        seen.assign(N + 1, false);
-        topo_order.resize(N + 1);
+    scc(const vector<vector<int>> &_g) {
+        n = (int)_g.size();
+        g = _g;
+        rg.resize(n + 1);
+        seen.assign(n + 1, false);
+        topo_order.resize(n + 1);
+        for (int v = 0; v < n; v++) {
+            for (int nv: _g[v]) {
+                rg[nv].push_back(v);
+            }
+        }
+    };
+
+    scc(int _n) {
+        n = _n;
+        g.resize(n + 1);
+        rg.resize(n + 1);
+        seen.assign(n + 1, false);
+        topo_order.resize(n + 1);
     };
     
     void add_edge(int from, int to) {
@@ -42,10 +57,10 @@ struct scc{
 
     int set() {
         vs.clear();
-        for (int v = 0; v < N; v++) {
+        for (int v = 0; v < n; v++) {
             if (seen[v] == false) dfs(v);
         }
-        seen.assign(N + 1, false);
+        seen.assign(n + 1, false);
         int k = 0;
         for (int i = (int) vs.size() - 1; i >= 0; i--) {
             if (seen[vs[i]] == false) {
