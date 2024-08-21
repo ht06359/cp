@@ -1,6 +1,9 @@
 #include<bits/stdc++.h>
 using namespace std;
 
+
+// https://onlinejudge.u-aizu.ac.jp/status/users/ht06359/submissions/1/DSL_2_A/judge/9574552/C++17
+// https://onlinejudge.u-aizu.ac.jp/status/users/ht06359/submissions/1/DSL_2_B/judge/9574541/C++17
 template<typename T, auto op, auto e>
 struct segment_tree {
     int n, siz;
@@ -45,22 +48,4 @@ int64_t op(int64_t a, int64_t b) {
 }
 int64_t e() {
     return (1ll<<31)-1;
-}
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
-    int n, tt;
-    cin >> n >> tt;
-    segment_tree<int64_t, op, e> s(n);
-    for (;tt--;) {
-        int t;
-        int64_t a, b;
-        cin >> t >> a >> b;
-        if (t == 1) {
-            cout << s.prod(a, b+1) << endl;
-        } else {
-            s.update(a, b);
-        }
-    }
 }

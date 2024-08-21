@@ -4,7 +4,7 @@ using namespace std;
 // verified
 // https://atcoder.jp/contests/abc296/submissions/56589427
 // https://onlinejudge.u-aizu.ac.jp/status/users/ht06359/submissions/1/GRL_3_C/judge/9571804/C++17
-
+// https://judge.yosupo.jp/submission/229749
 
 struct scc{
     int n;

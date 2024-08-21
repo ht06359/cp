@@ -1,9 +1,7 @@
 #include<bits/stdc++.h>
 using namespace std;
 
-// SCC(strongly connected components)
-// verified by
-// https://onlinejudge.u-aizu.ac.jp/status/users/ht06359/submissions/1/GRL_3_C/judge/9571723/C++17
+// https://judge.yosupo.jp/submission/229748
 
 vector<int> ord, low, cc, _s;
 vector<vector<int>> group;
