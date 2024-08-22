@@ -10,11 +10,27 @@ struct segment_tree {
         n = __lg(_n) + 1;
         dat.assign(1 << (n+1), e());
     };
+    void add(int i, T x) {
+        i += (1 << n);
+        dat[i] += x;
+        while (i > 1) {
+            i >>= 1;
+            dat[i] = op(dat[i << 1], dat[(i << 1) | 1]);
+        }
+    }
     void update(int i, T x) {
         i += (1 << n);
         dat[i] = x;
         while (i > 1) {
             i >>= 1;
+            dat[i] = op(dat[i << 1], dat[(i << 1) | 1]);
+        }
+    }
+    void init(const vector<T> &a) {
+        for (int i = 0; i < (int)a.size(); i++) {
+            dat[i + (1 << n)] = a[i];
+        }
+        for (int i = (1 << n) - 1; i >= 0; i--) {
             dat[i] = op(dat[i << 1], dat[(i << 1) | 1]);
         }
     }
@@ -35,34 +51,52 @@ struct segment_tree {
     }
 };
 
+/*
+template<typename T, auto op, auto e>
+struct heavy_light_decomposition {
+    int n;
+    vector<int> in, out, leader, siz, par, inv;
+    const vector<vector<int>> *g = nullptr;
+    segment_tree<T, op, e> *s = nullptr;
 
+    heavy_light_decomposition(const vector<vector<int>> &_g, segment_tree<T, op, e> &_s) {
+        n = (int) _g.size();
+        g = &_g;
+        s = &_s;
+        siz.assign(n, 0);
+        in.assign(n, 0);
+        out.resize(n);
+        par.assign(n, -1);
+        inv.resize(n);
+        leader.assign(n, 0);
+        _dfs_sz();
+        _dfs_hld();
+    }
 
-vector<int> in, out, leader, siz;
-vector<vector<int>> g;
-int timer = 0;
-
-void dfs_sz(int v = 0, int p = -1) {
-    siz[v] = 1;
-    if ((int)g[v].size() && g[v][0] == p) swap(g[v][0], g[v].back());
-    for (int &nv: g[v]) {
-        if (nv == p) continue;
-        dfs_sz(nv, v);
-        siz[v] += siz[nv];
-        if (siz[nv] > siz[g[v][0]]) {
-            swap(nv, g[v][0]);
+private:
+    void _dfs_sz(int v = 0) {
+        siz[v] = 1;
+        if ((int)(*g)[v].size() && (*g)[v][0] == par[v]) swap((*g)[v][0], (*g)[v].back());
+        for (int &nv: (*g)[v]) {
+            if (nv == par[v]) continue;
+            par[nv] = v;
+            _dfs_sz(nv);
+            siz[v] += siz[nv];
+            if (siz[nv] > siz[(*g)[v][0]]) swap(nv, (*g)[v][0]);
         }
     }
-}
 
-void dfs_hld(int v = 0, int p = -1) {
-    in[v] = timer++;
-    for (auto nv: g[v]) {
-        if (nv == p) continue;
-        leader[nv] = (nv == g[v][0]? leader[v]: nv);
-        dfs_hld(nv, v);
+    void _dfs_hld(int v = 0, int& timer = 0) {
+        in[v] = timer++;
+        inv[in[v]] = v;
+        for (auto nv: (*g)[v]) {
+            if (nv == par[v]) continue;
+            leader[nv] = (nv == (*g)[v][0]? leader[v]: nv);
+            _dfs_hld(nv, timer);
+        }
+        out[v] = timer;
     }
-    out[v] = timer;
-}
+};
 
 // the in[vertexes] in heavy path are in [in[v], in[leader[v]] 
 // the in[vertexes] in subtree are in [in[v], out[v])
@@ -103,59 +137,19 @@ int64_t op(int64_t a, int64_t b) {
 int64_t e() {
     return (int64_t) 1e16;
 }
+*/
 
 int main() {
     ios_base::sync_with_stdio(false);
     cin.tie(nullptr);
     int n;
     cin >> n;
-    g.resize(n);
+    vector<vector<int>> g(n);
+    segment_tree<op, e, 
     for (int i = 0; i < n - 1; i++) {
         int a, b;
         cin >> a >> b;
         g[a].push_back(b);
         g[b].push_back(a);
     }
-    siz.assign(n, 0);
-    in.assign(n, 0);
-    out.resize(n);
-    leader.resize(n, 0);
-    dfs_sz();
-    dfs_hld();
-    cout << endl;
-    for (auto x: in) cout << (x < 10? " ": "") << x << " ";
-    cout << endl;
-    for (auto x: out) cout << (x < 10? " ": "") << x << " ";
-    cout << endl;
-    cout << endl;
-    for (auto x: leader) cout << (x < 10? " ": "") << x << " ";
-    cout << endl;
-    cout << endl;
-    for (int i = 0; i < n; i++) {
-        cout << (in[leader[i]] < 10? " ": "")<< in[leader[i]] << " " ;
-    }
-    cout << endl;
-    for (auto x: in) cout << (x < 10? " ": "")<< x << " ";
-    cout << endl;
-    for (int i = 0; i < n; i++) {
-        cout << (out[leader[i]] < 10? " ": "")<< out[leader[i]] << " " ;
-    }
-    cout << endl;
-    vector<array<int, 4>> v(n);
-    for (int j = 0; j < 4; j++) {
-        for (int i = 0; i < n; i++) {
-            cin >> v[i].at(j);
-        }
-    }
-    sort(v.begin(), v.end());
-    for (int j = 0; j < 4; j++) {
-        for (auto x: v) cout << x.at(j) <<" ";
-        cout << '\n';
-    }
-    /*
-    for (int i = 0; i < n; i++) {
-        for (int v: g[i]) cout << v << " ";
-        cout << endl;
-    }
-    */
 }

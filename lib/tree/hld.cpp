@@ -37,29 +37,28 @@ struct segment_tree {
 
 
 
-vector<int> in, out, leader, siz;
+vector<int> in, out, leader, siz, par;
 vector<vector<int>> g;
 int timer = 0;
 
-void dfs_sz(int v = 0, int p = -1) {
+void dfs_sz(int v = 0) {
     siz[v] = 1;
-    if ((int)g[v].size() && g[v][0] == p) swap(g[v][0], g[v].back());
+    if ((int)g[v].size() && g[v][0] == par[v]) swap(g[v][0], g[v].back());
     for (int &nv: g[v]) {
-        if (nv == p) continue;
-        dfs_sz(nv, v);
+        if (nv == par[v]) continue;
+        par[nv] = v;
+        dfs_sz(nv);
         siz[v] += siz[nv];
-        if (siz[nv] > siz[g[v][0]]) {
-            swap(nv, g[v][0]);
-        }
+        if (siz[nv] > siz[g[v][0]]) swap(nv, g[v][0]);
     }
 }
 
-void dfs_hld(int v = 0, int p = -1) {
+void dfs_hld(int v = 0) {
     in[v] = timer++;
     for (auto nv: g[v]) {
-        if (nv == p) continue;
+        if (nv == par[v]) continue;
         leader[nv] = (nv == g[v][0]? leader[v]: nv);
-        dfs_hld(nv, v);
+        dfs_hld(nv);
     }
     out[v] = timer;
 }
@@ -119,6 +118,7 @@ int main() {
     siz.assign(n, 0);
     in.assign(n, 0);
     out.resize(n);
+    par.assign(n, -1);
     leader.resize(n, 0);
     dfs_sz();
     dfs_hld();
