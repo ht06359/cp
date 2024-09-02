@@ -1,101 +1,48 @@
 #include<bits/stdc++.h>
 using namespace std;
 
-
 // Euler Tour
-template<typename T, auto op, auto e>
-struct segment_tree {
-    int n;
-    vector<T> dat;
-    segment_tree (int _n) {
-        n = __lg(_n) + 1;
-        dat.assign(1 << (n+1), e());
-    };
+////////////////////////////////////////////////////////
+// Lowest Common Ancestor
+// https://onlinejudge.u-aizu.ac.jp/status/users/ht06359/submissions/1/GRL_5_C/judge/9577938/C++17
 
-    void update(int i, T x) {
-        i += (1 << n);
-        dat[i] = x;
-        while (i > 1) {
-            i >>= 1;
-            dat[i] = op(dat[i << 1], dat[(i << 1) | 1]);
-        }
-    }
+/*
+int root, timer = 0;
+vector<int> in, out;
+vector<pair<int,int>> depth;
 
-    T get(int i) {
-        return dat[i + (1<<n)];
-    }
-
-    T prod(int l, int r) {
-        return _prod(l, r, 1, 0, 1<<n);
-    }
-
-    T prod_all() {
-        return dat[1];
-    }
-
-    private:
-    T _prod(int l, int r, int id, int _l, int _r) {
-        if (_r <= l || r <= _l) return e();
-        if (l <= _l && _r <= r) return dat[id];
-        return op(_prod(l, r, id << 1, _l, (_l + _r) >> 1), _prod(l, r, (id << 1) | 1, (_l + _r) >> 1, _r));
-    }
-};
-
-int64_t op(int64_t a, int64_t b) {
-    return min(a, b);
-}
-int64_t e() {
-    return (int64_t) 1e16;
-}
-int root;
-vector<int> vs, depth, in, out;
-vector<int64_t> _sum;
 void init(int _n) {
-    depth.assign(2*_n, -1);
-    in.resize(2*_n);
-    out.resize(2*_n);
-    _sum.assign(2*_n+1, (int64_t)0);
-};
-void _dfs_et(const vector<vector<pair<int,int64_t>>> &_g, int v, int p, int d, int64_t w, int &timer) {
+    depth.resize(2*_n);
+    in.resize(_n);
+    out.resize(_n);
+}
+void _dfs_et(const vector<vector<int>> &_g, int v, int p, int d) {
     in[v] = timer;
-    vs[timer] = v;
-    depth[timer++] = d;
-    _sum[v] = (p != -1 ? _sum[p] + w : w);
-    for (auto [nv, l] :_g[v]) if (nv != p) {
-        _dfs_et(_g, nv, v, d+1, l, timer);
+    depth[timer++] = {d, v};
+    for (auto nv :_g[v]) if (nv != p) {
+        _dfs_et(_g, nv, v, d+1);
         out[v] = timer;
-        vs[timer] = v;
-        depth[timer++] = d;
+        depth[timer++] = {d, v};
     }
 }
+pair<int,int> op(pair<int,int> a, pair<int,int> b) {
+    return min(a, b);
+};
+pair<int,int> e() {
+    return {(int)1e9, -1};
+};
+int lca(int u, int v, segment_tree<pair<int,int>, op, e> &_s) {
+    return _s.prod(min(in[u], in[v]), max(in[v], in[u]+1)).second;
+}
+*/
+
+// init(n);
+// _dfs_et(g, 0, -1, 0);
+// segment_tree<pair<int,int>, op, e> s(depth);
+// cout << lca(a, b, s) << endl;
 
 int main() {
     ios_base::sync_with_stdio(false);
     cin.tie(nullptr);
-    int n;
-    cin >> n;
-    vector<vector<pair<int, int64_t>>> g(n);
-    for (int i = 0; i < n-1; i++) {
-        int u, v;
-        int64_t w;
-        cin >> u >> v >> w;
-        u--;v--;
-        g[u].emplace_back(v, w);
-        g[v].emplace_back(u, w);
-    }
-    init(n);
-    int ti = 0;
-    _dfs_et(g, 0, -1, 0, 0, ti);
-    int tt;
-    cin >> tt;
-    for (;tt--;) {
-        int t;
-        cin >> t;
-        if (t == 1) {
-            int id;
-            int64_t W;
-
-        }
-    }
 }
 

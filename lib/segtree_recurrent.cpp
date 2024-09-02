@@ -1,11 +1,15 @@
 #include<bits/stdc++.h>
 using namespace std;
 
+// https://onlinejudge.u-aizu.ac.jp/status/users/ht06359/submissions/1/DSL_2_A/judge/9577487/C++17
+// https://onlinejudge.u-aizu.ac.jp/status/users/ht06359/submissions/1/DSL_2_B/judge/9577500/C++17
+// https://judge.yosupo.jp/submission/230175
+// https://judge.yosupo.jp/submission/230178
+
 template<typename T, auto op, auto e>
 struct segment_tree {
     int n;
     vector<T> dat;
-
     segment_tree (int _n, T x = e()) {
         n = __lg(_n) + 1;
         dat.assign(1 << (n+1), x);
@@ -18,11 +22,10 @@ struct segment_tree {
         }
         _spread();
     };
-
     void add(int i, T x) {
         i += (1 << n);
         dat[i] += x;
-        for (;i > 1;) {
+        while (i > 1) {
             i >>= 1;
             dat[i] = op(dat[i << 1], dat[(i << 1) | 1]);
         }
@@ -30,7 +33,7 @@ struct segment_tree {
     void update(int i, T x) {
         i += (1 << n);
         dat[i] = x;
-        for (;i > 1;) {
+        while (i > 1) {
             i >>= 1;
             dat[i] = op(dat[i << 1], dat[(i << 1) | 1]);
         }
@@ -39,19 +42,17 @@ struct segment_tree {
         return dat[i + (1 << n)];
     }
     T prod(int l, int r) {
-        T res = e();
-        l += 1 << n, r += 1 << n;
-        for (;l < r;) {
-            if (l & 1) res = op(res, dat[l++]);
-            if (r & 1) res = op(res, dat[--r]);
-            l >>= 1, r >>= 1;
-        }
-        return res;
+        return _prod(l, r, 1, 0, 1 << n);
     }
     T prod_all() {
         return dat[1];
     }
 private:
+    T _prod(int l, int r, int id, int _l, int _r) {
+        if (_r <= l || r <= _l) return e();
+        if (l <= _l && _r <= r) return dat[id];
+        return op(_prod(l, r, id << 1, _l, (_l + _r) >> 1), _prod(l, r, (id << 1) | 1, (_l + _r) >> 1, _r));
+    }
     void _spread() {
         for (int i = (1 << n) - 1; i >= 0; i--) {
             dat[i] = op(dat[i << 1], dat[(i << 1) | 1]);
@@ -59,27 +60,9 @@ private:
     }
 };
 
-long long op(long long a, long long b) {
+int64_t op(int64_t a, int64_t b) {
     return min(a, b);
 }
-long long e() {
-    return (long long) (1ll << 31) - 1;
-}
-
-
-int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
-    int n, tt;
-    cin >> n >> tt;
-    vector<long long> a(n);
-    for (int i = 0; i < n; i++) {
-        cin >> a[i];
-    }
-    segment_tree<long long, op, e> seg(a);
-    for (;tt--;) {
-        int a, b;
-        cin >> a >> b;
-        cout << seg.prod(a, b) << "\n";
-    }
+int64_t e() {
+    return (int64_t) (1ll << 31) - 1;
 }

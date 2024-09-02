@@ -1,18 +1,21 @@
 #include<bits/stdc++.h>
 using namespace std;
 
-template<typename T, auto op, auto e>
-struct segment_tree {
+template<typename T, auto op, auto e, typename F, auto map, auto comp, auto id>
+struct lazy_segment_tree {
     int n;
     vector<T> dat;
+    vector<F> laz;
 
-    segment_tree (int _n, T x = e()) {
+    lazy_segment_tree (int _n, T x = e()) {
         n = __lg(_n) + 1;
         dat.assign(1 << (n+1), x);
+        laz.assign(1 << (n+1), id());
     };
-    segment_tree (const vector<T> &a) {
+    lazy_segment_tree (const vector<T> &a) {
         n = __lg((int)a.size()) + 1;
         dat.resize(1 << (n+1));
+        laz.assign(1 << (n+1), id());
         for (int i = 0; i < (int)a.size(); i++) {
             dat[i + (1 << n)] = a[i];
         }
@@ -21,7 +24,7 @@ struct segment_tree {
 
     void add(int i, T x) {
         i += (1 << n);
-        dat[i] += x;
+        dat[i] = op(dat[i], x);
         for (;i > 1;) {
             i >>= 1;
             dat[i] = op(dat[i << 1], dat[(i << 1) | 1]);
@@ -63,23 +66,10 @@ long long op(long long a, long long b) {
     return min(a, b);
 }
 long long e() {
-    return (long long) (1ll << 31) - 1;
+    return (long long) 1e18;
 }
-
 
 int main() {
     ios_base::sync_with_stdio(false);
     cin.tie(nullptr);
-    int n, tt;
-    cin >> n >> tt;
-    vector<long long> a(n);
-    for (int i = 0; i < n; i++) {
-        cin >> a[i];
-    }
-    segment_tree<long long, op, e> seg(a);
-    for (;tt--;) {
-        int a, b;
-        cin >> a >> b;
-        cout << seg.prod(a, b) << "\n";
-    }
 }
