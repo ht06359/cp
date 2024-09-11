@@ -1,6 +1,8 @@
 #include<bits/stdc++.h>
 using namespace std;
 
+// https://atcoder.jp/contests/abc087/submissions/57596792
+
 struct weighted_dsu {
     int n;
     vector<int> par;

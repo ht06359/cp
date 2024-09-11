@@ -8,3 +8,14 @@ using namespace std;
         _ = _ & 0xaaaaaaaa? _ & 0xaaaaaaaa: _;
         return _ << 2;
     }
+
+    /*
+#ifdef E
+#define _GLIBCXX_DEBUG
+#else 
+#define NDEBUG
+#endif
+
+g++ -DE -o a a.cpp
+
+*/

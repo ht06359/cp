@@ -2,6 +2,7 @@
 using namespace std;
 
 // https://atcoder.jp/contests/abc294/submissions/57021935
+// https://atcoder.jp/contests/abc235/submissions/57426386
 // MUST USE IT WITH SEGMENT_TREE
 
 template<typename T = long long>

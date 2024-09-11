@@ -1,21 +1,38 @@
 #include<bits/stdc++.h>
 using namespace std;
 
-const long long inf = 1e9;
-
 int main() {
     ios_base::sync_with_stdio(false);
     cin.tie(nullptr);
-    int n, h, w;
-    cin >> n >> h >> w;
-    vector<pair<int,int>> p(n);
-    for (int i = 0; i < n; i++) {
-        cin >> p[i].first >> p[i].second;
+    cout << 2 << "\n";
+    string s, t;
+    cin >> s;
+    cin >> t;
+    int n = s.size();
+    cout << "jaifjaoeijfo\n";
+    s += s;
+    vector<vector<int>> cnt(2*n+1, vector<int> (26, 0));
+    for (int i = 0; i < 2*n; i++) {
+        cout << "%ER\n";
+        for (int j = 0; j < 26; j++) {
+            cnt[i+1][j] = cnt[i][j];
+            cout << j << "\n";
+        }
+        cnt[i+1][s[i%n]-'a']++;
     }
-    sort(p.begin(), p.end());
-    vector<int> v(n);
-    for (int i = 0; i < n; i++) {
-        v[i] = p[i].second;
+    cout << "akjfaijpe\n";
+    int ans = 1;
+    int have = 0;
+    for (int i = 0; i < (int) t.size(); i++) {
+        int l = have, r = 2*n;
+        int c = t[i] - 'a';
+        while (r - l > 1) {
+            int m = (r + l) / 2;
+            if (cnt[m][c] - cnt[have][c] > 0) m = r;
+            else m = l;
+        }
+        if (r >= n) ans++;
+        have = r%n;
     }
-    vector<int> dp(n+1, inf);
-    dp[0] = -inf;
+    cout << ans << "\n";
+}
